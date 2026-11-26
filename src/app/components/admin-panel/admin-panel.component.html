@@ -1,0 +1,121 @@
+﻿<div class="container">
+  <h1>Panel de Administración</h1>
+  <div class="tabs">
+    <button [class.active]="tab() === 'stats'" (click)="tab.set('stats')">Estadísticas</button>
+    <button [class.active]="tab() === 'libros'" (click)="tab.set('libros')">Libros</button>
+    <button [class.active]="tab() === 'autores'" (click)="tab.set('autores')">Autores</button>
+    <button [class.active]="tab() === 'categorias'" (click)="tab.set('categorias')">Categorías</button>
+    <button [class.active]="tab() === 'prestamos'" (click)="tab.set('prestamos')">Préstamos</button>
+    <button [class.active]="tab() === 'usuarios'" (click)="tab.set('usuarios')">Usuarios</button>
+  </div>
+
+  @if (error()) { <div class="alert-error">{{ error() }}</div> }
+
+  @if (tab() === 'stats' && stats(); as s) {
+    <div class="kpi-grid">
+      <div class="kpi"><span>Libros</span><strong>{{ s.total_libros }}</strong></div>
+      <div class="kpi"><span>Ejemplares Disp.</span><strong>{{ s.ejemplares_disponibles }} / {{ s.total_ejemplares }}</strong></div>
+      <div class="kpi"><span>Activos</span><strong>{{ s.prestamos_activos }}</strong></div>
+      <div class="kpi"><span>Vencidos</span><strong class="danger">{{ s.prestamos_vencidos }}</strong></div>
+      <div class="kpi"><span>Usuarios</span><strong>{{ s.total_usuarios }}</strong></div>
+    </div>
+  }
+
+  @if (tab() === 'libros') {
+    <form class="form-inline" (ngSubmit)="guardarLibro()">
+      <input [(ngModel)]="nuevoLibro.titulo" name="titulo" placeholder="Título" required>
+      <input [(ngModel)]="nuevoLibro.isbn" name="isbn" placeholder="ISBN" required>
+      <input type="number" [(ngModel)]="nuevoLibro.ejemplares_totales" name="ejemplares" min="1" required>
+      <select [(ngModel)]="nuevoLibro.autor_id" name="autor_id" required>
+        <option [ngValue]="0" disabled>Autor</option>
+        @for (a of autores(); track a.id) { <option [ngValue]="a.id">{{ a.nombre }}</option> }
+      </select>
+      <select [(ngModel)]="nuevoLibro.categoria_id" name="categoria_id" required>
+        <option [ngValue]="0" disabled>Categoría</option>
+        @for (c of categorias(); track c.id) { <option [ngValue]="c.id">{{ c.nombre }}</option> }
+      </select>
+      <button type="submit" class="btn-add">+ Agregar</button>
+    </form>
+    <table class="tabla">
+      <thead><tr><th>ID</th><th>Título</th><th>ISBN</th><th>Autor</th><th>Stock</th><th>Acción</th></tr></thead>
+      <tbody>
+        @for (l of libros(); track l.id) {
+          <tr>
+            <td>{{ l.id }}</td><td>{{ l.titulo }}</td><td>{{ l.isbn }}</td><td>{{ l.autor.nombre }}</td>
+            <td>{{ l.ejemplares_disponibles }}/{{ l.ejemplares_totales }}</td>
+            <td><button class="btn-del" (click)="eliminarLibro(l.id)">Eliminar</button></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  @if (tab() === 'autores') {
+    <form class="form-inline" (ngSubmit)="guardarAutor()">
+      <input [(ngModel)]="nuevoAutor.nombre" name="aname" placeholder="Nombre" required>
+      <input [(ngModel)]="nuevoAutor.nacionalidad" name="anac" placeholder="Nacionalidad">
+      <button type="submit" class="btn-add">+ Agregar</button>
+    </form>
+    <table class="tabla">
+      <thead><tr><th>ID</th><th>Nombre</th><th>Nacionalidad</th><th>Acción</th></tr></thead>
+      <tbody>
+        @for (a of autores(); track a.id) {
+          <tr>
+            <td>{{ a.id }}</td><td>{{ a.nombre }}</td><td>{{ a.nacionalidad || '—' }}</td>
+            <td><button class="btn-del" (click)="eliminarAutor(a.id)">Eliminar</button></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  @if (tab() === 'categorias') {
+    <form class="form-inline" (ngSubmit)="guardarCategoria()">
+      <input [(ngModel)]="nuevaCat.nombre" name="cname" placeholder="Nombre" required>
+      <input [(ngModel)]="nuevaCat.descripcion" name="cdesc" placeholder="Descripción">
+      <button type="submit" class="btn-add">+ Agregar</button>
+    </form>
+    <table class="tabla">
+      <thead><tr><th>ID</th><th>Nombre</th><th>Descripción</th><th>Acción</th></tr></thead>
+      <tbody>
+        @for (c of categorias(); track c.id) {
+          <tr>
+            <td>{{ c.id }}</td><td>{{ c.nombre }}</td><td>{{ c.descripcion || '—' }}</td>
+            <td><button class="btn-del" (click)="eliminarCategoria(c.id)">Eliminar</button></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  @if (tab() === 'prestamos') {
+    <table class="tabla">
+      <thead><tr><th>ID</th><th>Usuario</th><th>Libro</th><th>Límite</th><th>Estado</th><th>Acción</th></tr></thead>
+      <tbody>
+        @for (p of prestamos(); track p.id) {
+          <tr>
+            <td>{{ p.id }}</td><td>{{ p.usuario.nombre }}</td><td>{{ p.libro.titulo }}</td>
+            <td>{{ p.fecha_limite }}</td><td>{{ p.estado }}</td>
+            <td>
+              @if (p.estado !== 'devuelto') { <button class="btn-ok" (click)="devolverPrestamo(p.id)">Devolver</button> }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  @if (tab() === 'usuarios') {
+    <table class="tabla">
+      <thead><tr><th>ID</th><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th></tr></thead>
+      <tbody>
+        @for (u of usuarios(); track u.id) {
+          <tr>
+            <td>{{ u.id }}</td><td>{{ u.nombre }}</td><td>{{ u.correo }}</td>
+            <td>{{ u.rol }}</td><td>{{ u.activo ? 'Activo' : 'Inactivo' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

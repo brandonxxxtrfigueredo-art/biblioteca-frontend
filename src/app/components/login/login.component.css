@@ -1,0 +1,13 @@
+﻿.auth-container { display: flex; justify-content: center; align-items: center; min-height: 80vh; padding: 1rem; }
+.auth-card { background: #fff; padding: 2rem; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
+h2 { margin-top: 0; color: #1e293b; text-align: center; }
+.form-group { margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.4rem; }
+label { font-size: 0.9rem; font-weight: 600; color: #475569; }
+input { padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1rem; }
+.btn-submit { width: 100%; padding: 0.75rem; background: #0284c7; color: #fff; border: none; border-radius: 6px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 0.5rem; }
+.alert-error { background: #fee2e2; color: #b91c1c; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem; font-size: 0.9rem; }
+.toggle-text { text-align: center; margin-top: 1rem; font-size: 0.9rem; color: #64748b; }
+.btn-link { background: none; border: none; color: #0284c7; font-weight: 600; cursor: pointer; text-decoration: underline; }
+.demo-creds { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; text-align: center; color: #64748b; }
+.demo-btns { display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.5rem; }
+.demo-btns button { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer; }

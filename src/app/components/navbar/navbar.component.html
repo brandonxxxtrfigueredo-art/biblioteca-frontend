@@ -1,0 +1,20 @@
+﻿<nav class="navbar">
+  <div class="nav-brand"><a routerLink="/catalogo">Biblioteca Web</a></div>
+  <div class="nav-links">
+    <a routerLink="/catalogo" routerLinkActive="active">Catálogo</a>
+    @if (auth.estaAutenticado()) {
+      <a routerLink="/mis-prestamos" routerLinkActive="active">Mis Préstamos</a>
+    }
+    @if (auth.esAdmin()) {
+      <a routerLink="/admin" routerLinkActive="active" class="badge-admin">Panel Admin</a>
+    }
+  </div>
+  <div class="nav-user">
+    @if (auth.usuario(); as user) {
+      <span class="user-info">{{ user.nombre }} ({{ user.rol }})</span>
+      <button (click)="auth.cerrarSesion()" class="btn-outline">Salir</button>
+    } @else {
+      <a routerLink="/login" class="btn-primary">Iniciar Sesión</a>
+    }
+  </div>
+</nav>

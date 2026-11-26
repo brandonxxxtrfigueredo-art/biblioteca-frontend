@@ -1,0 +1,26 @@
+﻿<div class="container">
+  <h1>Mis Préstamos</h1>
+  <table class="tabla">
+    <thead>
+      <tr><th>Libro</th><th>Préstamo</th><th>Límite</th><th>Devolución</th><th>Estado</th><th>Acción</th></tr>
+    </thead>
+    <tbody>
+      @for (p of prestamos(); track p.id) {
+        <tr>
+          <td><strong>{{ p.libro.titulo }}</strong></td>
+          <td>{{ p.fecha_prestamo }}</td>
+          <td>{{ p.fecha_limite }}</td>
+          <td>{{ p.fecha_devolucion || '—' }}</td>
+          <td><span class="badge" [class]="p.estado">{{ p.estado.toUpperCase() }}</span></td>
+          <td>
+            @if (p.estado !== 'devuelto') {
+              <button class="btn-devolver" (click)="devolver(p.id)">Devolver</button>
+            } @else { <span>Completado</span> }
+          </td>
+        </tr>
+      } @empty {
+        <tr><td colspan="6" class="empty">No tienes préstamos registrados.</td></tr>
+      }
+    </tbody>
+  </table>
+</div>

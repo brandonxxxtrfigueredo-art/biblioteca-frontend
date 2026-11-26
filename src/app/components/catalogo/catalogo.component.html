@@ -1,0 +1,47 @@
+﻿<div class="container">
+  <header class="page-header">
+    <h1>Catálogo de Libros</h1>
+    <p>Explora nuestra colección y solicita préstamos en línea</p>
+  </header>
+
+  <section class="filtros">
+    <input type="text" [(ngModel)]="buscar" (input)="cargarLibros()" placeholder="Buscar por título, ISBN o autor...">
+    <select [(ngModel)]="categoriaId" (change)="cargarLibros()">
+      <option [ngValue]="undefined">Todas las categorías</option>
+      @for (cat of categorias(); track cat.id) { <option [ngValue]="cat.id">{{ cat.nombre }}</option> }
+    </select>
+    <select [(ngModel)]="autorId" (change)="cargarLibros()">
+      <option [ngValue]="undefined">Todos los autores</option>
+      @for (aut of autores(); track aut.id) { <option [ngValue]="aut.id">{{ aut.nombre }}</option> }
+    </select>
+    <label class="checkbox-label">
+      <input type="checkbox" [(ngModel)]="soloDisponibles" (change)="cargarLibros()"> Solo disponibles
+    </label>
+  </section>
+
+  @if (mensaje()) { <div class="toast" [class.toast-error]="esError()">{{ mensaje() }}</div> }
+
+  <div class="grid-libros">
+    @for (libro of libros(); track libro.id) {
+      <article class="card-libro">
+        <img [src]="libro.portada_url || 'https://placehold.co/300x450?text=Sin+Portada'" [alt]="libro.titulo">
+        <div class="card-body">
+          <span class="tag-cat">{{ libro.categoria.nombre }}</span>
+          <h3>{{ libro.titulo }}</h3>
+          <p class="autor">Por <strong>{{ libro.autor.nombre }}</strong> ({{ libro.anio_publicacion || 'S/F' }})</p>
+          <p class="sinopsis">{{ libro.sinopsis || 'Sin sinopsis disponible.' }}</p>
+          <div class="card-footer">
+            <span class="stock" [class.agotado]="libro.ejemplares_disponibles === 0">
+              {{ libro.ejemplares_disponibles }} / {{ libro.ejemplares_totales }} disp.
+            </span>
+            <button class="btn-prestar" [disabled]="libro.ejemplares_disponibles === 0" (click)="pedirPrestado(libro)">
+              {{ libro.ejemplares_disponibles > 0 ? 'Pedir prestado' : 'Agotado' }}
+            </button>
+          </div>
+        </div>
+      </article>
+    } @empty {
+      <p>No se encontraron libros.</p>
+    }
+  </div>
+</div>
